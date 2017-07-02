@@ -2,6 +2,9 @@ package com.quine.vertxdemo;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
+import io.vertx.ext.web.Router;
+
+import com.quine.vertxdemo.router.DemoRouterFactory;
 
 /**
  * @author Ivan Dejanovic
@@ -12,9 +15,13 @@ public class DemoVerticle extends AbstractVerticle {
 
 	@Override
 	public void start(Future<Void> fut) {
-		vertx.createHttpServer().requestHandler(r -> {
-			r.response().end("<h1>Hello from my first " + "Vert.x 3 application</h1>");
-		}).listen(8080, result -> {
+		// Create a router object.
+		Router router = DemoRouterFactory.createRouter(vertx);
+		// Get port number
+		Integer port = config().getInteger("http.port", 8080);
+
+		// Create the HTTP server and pass the "accept" method to the request handler.
+		vertx.createHttpServer().requestHandler(router::accept).listen(port, result -> {
 			if (result.succeeded()) {
 				fut.complete();
 			} else {
