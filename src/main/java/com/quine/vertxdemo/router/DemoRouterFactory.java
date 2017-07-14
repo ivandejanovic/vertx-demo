@@ -3,6 +3,8 @@
  */
 package com.quine.vertxdemo.router;
 
+import org.slf4j.LoggerFactory;
+
 import com.quine.vertxdemo.handler.RestHandler;
 import com.quine.vertxdemo.handler.RestHandlerFactory;
 
@@ -17,8 +19,11 @@ import io.vertx.ext.web.handler.StaticHandler;
  *
  */
 public class DemoRouterFactory {
+	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(DemoRouterFactory.class);
 
 	public static Router createRouter(Vertx vertx) {
+		logger.info("Setting router endpoints.");
+		
 		// Create a router object.
 		Router router = Router.router(vertx);
 		RestHandler handler = RestHandlerFactory.createWhiskyRestHandler();

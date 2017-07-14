@@ -6,6 +6,8 @@ package com.quine.vertxdemo.handler;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.slf4j.LoggerFactory;
+
 import com.quine.vertxdemo.entity.Whisky;
 
 import io.vertx.core.json.Json;
@@ -17,6 +19,7 @@ import io.vertx.ext.web.RoutingContext;
  *
  */
 public class WhiskyRestHandler implements RestHandler{
+	private final static org.slf4j.Logger logger = LoggerFactory.getLogger(WhiskyRestHandler.class);
 
 	// Store our product
 	private Map<Integer, Whisky> products = new LinkedHashMap<>();
@@ -26,6 +29,8 @@ public class WhiskyRestHandler implements RestHandler{
 	}
 
 	public void getAll(RoutingContext routingContext) {
+		logger.info("Invoked getAll.");
+		
 		routingContext.response().putHeader("content-type", "application/json; charset=utf-8")
 				.end(Json.encodePrettily(products.values()));
 	}
@@ -33,8 +38,10 @@ public class WhiskyRestHandler implements RestHandler{
 	public void get(RoutingContext routingContext) {
 		final String id = routingContext.request().getParam("id");
 		if (id == null) {
+			logger.info("Invoked get with out id.");
 			routingContext.response().setStatusCode(400).end();
 		} else {
+			logger.info("Invoked get with id: " + id);
 			final Integer idAsInteger = Integer.valueOf(id);
 			Whisky whisky = products.get(idAsInteger);
 			if (whisky == null) {
@@ -47,6 +54,8 @@ public class WhiskyRestHandler implements RestHandler{
 	}
 
 	public void post(RoutingContext routingContext) {
+		logger.info("Invoked post.");
+		
 		final Whisky whisky = Json.decodeValue(routingContext.getBodyAsString(), Whisky.class);
 		products.put(whisky.getId(), whisky);
 		routingContext.response().setStatusCode(201).putHeader("content-type", "application/json; charset=utf-8")
@@ -54,6 +63,8 @@ public class WhiskyRestHandler implements RestHandler{
 	}
 
 	public void put(RoutingContext routingContext) {
+		logger.info("Invoked put.");
+		
 		final String id = routingContext.request().getParam("id");
 		JsonObject json = routingContext.getBodyAsJson();
 		if (id == null || json == null) {
@@ -73,6 +84,8 @@ public class WhiskyRestHandler implements RestHandler{
 	}
 
 	public void delete(RoutingContext routingContext) {
+		logger.info("Invoked delete.");
+		
 		String id = routingContext.request().getParam("id");
 		if (id == null) {
 			routingContext.response().setStatusCode(400).end();
